@@ -18,8 +18,8 @@ conn = "mongodb://localhost:27017"
 client = pymongo.MongoClient(conn)
 
 # Create a database and a collection.
-db = client.mars_db
-collect = mars_db.mars_collection
+db = client.db
+mars_collection = db.mars_collection
 
 # This function scrapes the latest Mars news and images from four different websites, stores the scraped content in a Mongo database, 
 # and returns a Python dictionary.
@@ -38,6 +38,11 @@ def scrape():
     # Scrape teaser from first news article.
     first_article_teaser = soup.find(class_ = "article_teaser_body").text
 
+    # Insert scraped contents into mars_collection.
+    doc = {"news_title": first_article_title, "news_teaser": first_article_teaser}
+    mars_collection.insert_one(doc)
+
+
     # Collect current featured Mars image from jpl.nasa.gov:
 
     # Store url as string variable.
@@ -55,12 +60,22 @@ def scrape():
     # Concatenate partial url with homepage url.
     mars_image_url = "https://www.jpl.nasa.gov" + partial_url
 
+    # Insert scraped contents into mars_collection.
+    doc = {"mars_image_url": mars_image_url}
+    mars_collection.insert_one(doc)
+
+
     # Collect table of Mars facts from space-facts.com:
 
     # Use Pandas to collect the table and store it in a DataFrame.
     facts_df = pd.read_html("https://space-facts.com/mars/")[0]
     # Convert the DataFrame back to html for subsequent display.
     facts_html = facts_df.to_html()
+
+    # Insert scraped contents into mars_collection.
+    doc = {"facts_table": facts_html}
+    mars_collection.insert_one(doc)
+
 
     # Collect Mars hemisphere images from astrogeology.usgs.gov:
 
@@ -91,9 +106,8 @@ def scrape():
         # Close browser.
         browser.quit
 
-    # store scraped content in a Mongo db, overwriting the existing document each time the function is called.
+    # Insert scraped contents into mars_collection.
+    mars_collection.insert_many(hemisphere_images)
 
-
-    # return a single Python dictionary.
-
-print ("Works!")
+# Return mars_collection to app.py.
+return mars_collection
