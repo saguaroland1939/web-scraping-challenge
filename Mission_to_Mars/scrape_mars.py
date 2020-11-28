@@ -7,23 +7,19 @@ from webdriver_manager.chrome import ChromeDriverManager # Required by Splinter.
 import pandas as pd
 import pymongo
 
-# Set up Splinter:
-# Install Chrome driver manager (if not already present) and store path for use by Splinter.
-chrome_driver_path = {'executable_path': ChromeDriverManager().install()}
-# Instantiate Splinter Browser object.
-browser = Browser('chrome', **chrome_driver_path)
-
-# Connect to Mongo database.
-conn = "mongodb://localhost:27017"
-client = pymongo.MongoClient(conn)
-
-# Create a database and a collection and store in variables.
-db = client.mars_db
-collection = db.mars_collection
-
 # This function scrapes the latest Mars news and images from four different websites, stores the scraped content in a Mongo database, 
 # and returns a Python dictionary.
 def scrape():
+
+    # Create a blank dictionary to return all scraped results.
+    dictionary = {}
+
+    # Set up Splinter:
+    # Install Chrome driver manager (if not already present) and store path for use by Splinter.
+    chrome_driver_path = {'executable_path': ChromeDriverManager().install()}
+    # Instantiate Splinter Browser object.
+    browser = Browser('chrome', **chrome_driver_path)
+
 
     # Collect latest news from mars.nasa.gov:
 
@@ -38,10 +34,8 @@ def scrape():
     # Scrape teaser from first news article.
     first_article_teaser = soup.find(class_ = "article_teaser_body").text
 
-    # Insert scraped contents into mars_collection.
-    doc = {"news_title": first_article_title, "news_teaser": first_article_teaser}
-    collection.insert_one(doc)
-
+    # Insert scraped contents into dictionary.
+    dictionary.update({"news_title": first_article_title, "news_teaser": first_article_teaser})
 
     # Collect current featured Mars image from jpl.nasa.gov:
 
@@ -60,9 +54,8 @@ def scrape():
     # Concatenate partial url with homepage url.
     mars_image_url = "https://www.jpl.nasa.gov" + partial_url
 
-    # Insert scraped contents into mars_collection.
-    doc = {"mars_image_url": mars_image_url}
-    collection.insert_one(doc)
+    # Insert scraped contents into dictionary.
+    dictionary.update({"mars_image_url": mars_image_url})
 
 
     # Collect table of Mars facts from space-facts.com:
@@ -72,9 +65,8 @@ def scrape():
     # Convert the DataFrame back to html for subsequent display.
     facts_html = facts_df.to_html()
 
-    # Insert scraped contents into mars_collection.
-    doc = {"facts_table": facts_html}
-    collection.insert_one(doc)
+    # Insert scraped contents into dictionary.
+    dictionary.update({"facts_table_html": facts_html})
 
 
     # Collect Mars hemisphere images from astrogeology.usgs.gov:
@@ -106,8 +98,11 @@ def scrape():
         # Close browser.
         browser.quit
 
-    # Insert scraped contents into mars_collection.
-    collection.insert_many(hemisphere_images)
+    # Insert scraped contents into dictionary.
+    dictionary.update({"hemisphere_image_list": hemisphere_images})
 
-# Return to app.py.
-return
+    return dictionary
+
+# Test print
+#dictionary = scrape()
+#print(dictionary)
