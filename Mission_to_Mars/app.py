@@ -3,21 +3,32 @@
 # images and facts from various websites and updates the Mongo database. 
 
 # Import dependencies.
-import scrape_mars
 from flask import Flask, render_template
+import pymongo
 
 # Set up Flask app to run from command line.
 app = Flask(__name__)
 
+# Set up Mongo connection.
+conn = "mongodb://localhost:27017"
+client = pymongo.MongoClient(conn)
+
+# Connect to Mongo database and collection.
+db = client.mars_db
+collection = db.mars_collection
+
 # Root route queries Mongo database containing scraped content and passes results through a Flask html template before displaying them.
 @app.route('/')
-def view():
-    return render_template("index.html", dict=___)
+def index():
+    # Query collection and store results in variable.
+    items = list(collection.find())
+    return render_template("index.html", new_items = items)
 
 # Scrape route activates scrape_mars.py to scrape latest content from the four websites.
 @app.route('/scrape')
 def scrape()
-    scrape_mars.scrape()
+    import scrape_mars
+    scrape_results = scrape_mars.scrape()
     return
 
 # Set up Flask app to run from command line.

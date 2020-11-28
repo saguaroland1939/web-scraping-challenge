@@ -17,9 +17,9 @@ browser = Browser('chrome', **chrome_driver_path)
 conn = "mongodb://localhost:27017"
 client = pymongo.MongoClient(conn)
 
-# Create a database and a collection.
-db = client.db
-mars_collection = db.mars_collection
+# Create a database and a collection and store in variables.
+db = client.mars_db
+collection = db.mars_collection
 
 # This function scrapes the latest Mars news and images from four different websites, stores the scraped content in a Mongo database, 
 # and returns a Python dictionary.
@@ -40,7 +40,7 @@ def scrape():
 
     # Insert scraped contents into mars_collection.
     doc = {"news_title": first_article_title, "news_teaser": first_article_teaser}
-    mars_collection.insert_one(doc)
+    collection.insert_one(doc)
 
 
     # Collect current featured Mars image from jpl.nasa.gov:
@@ -62,7 +62,7 @@ def scrape():
 
     # Insert scraped contents into mars_collection.
     doc = {"mars_image_url": mars_image_url}
-    mars_collection.insert_one(doc)
+    collection.insert_one(doc)
 
 
     # Collect table of Mars facts from space-facts.com:
@@ -74,7 +74,7 @@ def scrape():
 
     # Insert scraped contents into mars_collection.
     doc = {"facts_table": facts_html}
-    mars_collection.insert_one(doc)
+    collection.insert_one(doc)
 
 
     # Collect Mars hemisphere images from astrogeology.usgs.gov:
@@ -107,7 +107,7 @@ def scrape():
         browser.quit
 
     # Insert scraped contents into mars_collection.
-    mars_collection.insert_many(hemisphere_images)
+    collection.insert_many(hemisphere_images)
 
-# Return mars_collection to app.py.
-return mars_collection
+# Return to app.py.
+return
