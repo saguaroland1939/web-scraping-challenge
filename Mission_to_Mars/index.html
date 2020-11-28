@@ -1,1 +1,24 @@
 <!-- This is a template HTML file that...It uses bootstrap for placement and style.css for additional styling. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Mars Stuff</title>
+</head>
+
+<body>
+    <div class="container text-center">
+      <h1 class="jumbotron">Mission to Mars</h1>
+      <!-- Insert button here called 'Scrape New Data' that will open /scrape endpoint of Flask app. -->
+      <div>
+            <!-- Might need a for loop like this to get some of the content out of the dictionary, maybe not though. -->
+          {% for x in inventory %}
+          <li>{{ x.type }}</li>
+          <li>{{ x.cost * x.stock })</li>
+          {% endfor %}
+      </div>
+    </div>
+  </body>
+  
+  </html>
