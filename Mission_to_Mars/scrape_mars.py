@@ -34,7 +34,7 @@ def scrape():
     # Scrape teaser from first news article.
     first_article_teaser = soup.find(class_ = "article_teaser_body").text
 
-    # Insert scraped contents into dictionary.
+    # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"news_title": first_article_title, "news_teaser": first_article_teaser})
 
     # Collect current featured Mars image from jpl.nasa.gov:
@@ -54,7 +54,7 @@ def scrape():
     # Concatenate partial url with homepage url.
     mars_image_url = "https://www.jpl.nasa.gov" + partial_url
 
-    # Insert scraped contents into dictionary.
+    # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"mars_image_url": mars_image_url})
 
 
@@ -65,7 +65,7 @@ def scrape():
     # Convert the DataFrame back to html for subsequent display.
     facts_html = facts_df.to_html()
 
-    # Insert scraped contents into dictionary.
+    # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"facts_table_html": facts_html})
 
 
@@ -98,7 +98,7 @@ def scrape():
         # Close browser.
         browser.quit
 
-    # Insert scraped contents into dictionary.
+    # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"hemisphere_image_list": hemisphere_images})
 
     return dictionary

@@ -9,35 +9,31 @@ import pymongo
 # Set up Flask app to run from command line.
 app = Flask(__name__)
 
-# Set up Mongo connection.
-conn = "mongodb://localhost:27017"
-client = pymongo.MongoClient(conn)
-
-# Connect to Mongo database and collection.
-db = client.mars_db
-collection = db.mars_collection
-
-# Root route queries Mongo database containing scraped content and passes results through a Flask html template before displaying them.
+# Root route queries Mongo database containing scraped content and passes results through a Flask html template before rendering.
 @app.route('/')
 def index():
+    # Query collection and store results in a dictionary variable.
+    latest_content = collection.find()
+    # Render dictionary via Flask template.
+    return render_template("index.html", latest_content = latest_content)
 
-    # Query collection and store results in variable.
-    items = list(collection.find())
-    return render_template("index.html", new_items = items)
-
-# Scrape route activates scrape_mars.py to scrape latest content from the four websites.
+# Scrape route activates scrape_mars.py to scrape a set of websites.
 @app.route('/scrape')
 def scrape()
-
-    # Remove old MongoDB data in preparation for a new scrape.
-
+    # Set up Mongo connection using Pymongo library.
+    conn = "mongodb://localhost:27017"
+    client = pymongo.MongoClient(conn)
+    # Connect to Mongo database and collection.
+    db = client.mars_db
+    mars_collection = db.mars_collection
+    # Import local scrape_mars.py script
     import scrape_mars
-    doc = scrape_mars.scrape()
-    collection.insert_one(doc)
-
-    # Insert scrape results into MongoDB.
-
-    return
+    # Run scrape function and retreive dictionary of scraped content.
+    post = scrape_mars.scrape()
+    # Delete previous document from Mongo collection.
+    mars_collection.remove({})
+    # Post new document to Mongo collection.
+    mars_collection.insert_one(post)
 
 # Set up Flask app to run from command line.
 if __name__ == "__main__":
