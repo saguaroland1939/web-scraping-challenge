@@ -96,7 +96,7 @@ def scrape():
         # Store hemisphere name and image url as dictionary in hemisphere_images.
         hemisphere_images.append({"title": title, "img_url": img_url})
         # Close browser.
-        browser.quit
+        browser.quit()
 
     # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"hemisphere_image_list": hemisphere_images})
