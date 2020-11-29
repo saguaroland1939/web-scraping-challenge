@@ -12,35 +12,80 @@
     {
       background-image: url( {{ latest_content.mars_image_url }} );
       background-attachment: fixed;
-      color: white;
+      color: silver;
+    }
+
+    h1.jumbotron 
+    {
+      background-color:rgb(82, 81, 81);
+      color:silver;
     }
   </style>
 </head>
 
-<!-- Dictionary is called 'latest_content'. -->
-
 <body>
-    <div class="container text-center">
-      <h1 class="jumbotron" color=black>Latest Updates About Mission to Mars</h1>
-      <!-- Botton activates scrape route in Flask app. -->
-      <button type="button" class="btn btn-warning" href="http://127.0.0.1:5000/scrape">Get latest updates</button>
-      <div>
-      <br>
-      <!--  -->
-      <br>
-      <h3>Latest from <a href="https://mars.nasa.gov/news/">NASA</a>: <u>{{ latest_content.news_title }}</u></h3>
-      <h4>{{ latest_content.news_teaser }}</h4>
+  <div class="container text-center">
+    <div class="row">
+      <div col-lg-12 mx-auto>
+  <!-- Main heading. Botton activates scrape route in Flask app. -->
+  <div class="container text-center">
+    <h1 class="jumbotron" color=black>
+      Latest Updates About Mission to Mars<br>
+      <button type="button" class="btn btn-warning" href="http://127.0.0.1:5000/scrape">
+        Get latest updates
+      </button>
+    </h1>
+  </div>
+  <br>
+    
+  <!-- News sub-heading -->
+  <br>
+  <h2 align="left">Latest from <a href="https://mars.nasa.gov/news/">NASA</a>: <u>{{ latest_content.news_title }}</u></h2>
+  <h5 align="left">{{ latest_content.news_teaser }}</h5>
+  <br>
+  <br>
 
-      <!-- Display Mars facts table. Use 'safe' to allow jinja2 to run the html instead of printing it. -->
-      {{ latest_content.facts_table_html | safe }}
-      
-      <!-- Loop through list of image url's to display each image -->
-      {% for dict in latest_content.hemisphere_image_list %}
-      <p> {{dict.title}} </p>
-      <img src="{{dict.img_url}}" /img>
-      {% endfor %}
+  <!-- Display Mars facts table. Use 'safe' to allow jinja2 to run the html instead of printing it. -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 mx-auto">
+        <strong><h2>Mars Facts</h2></strong>
       </div>
     </div>
-  </body>
+    <div class="row">
+      <div class="col-lg-6 mx-auto">
+        {{ latest_content.facts_table_html | safe }}
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+      
+      
+  <!-- Mars Hemispheres heading -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 mx-auto">
+        <u><h3>Mars Hemispheres</h3></u>
+        <br>
+      </div>
+    </div>
   
-  </html>
+    <!-- Mars hemispheres images -->
+    <div class="row">
+    <!-- Loop through list of image url's and display each image-->
+    {% for x in range(0, 4) %}
+      <div class="col-lg-3 mx-auto">
+        <figure class="figure">
+          <img style="border: 3px solid gray" src="{{ latest_content.hemisphere_image_list[x].img_url }}" alt="{{ latest_content.hemisphere_image_list[x].title }}" height=200px width=200px/>
+          <i><figcaption class="figure-caption"> {{ latest_content.hemisphere_image_list[x].title }} </figcaption></i>
+        </figure>
+      </div> <!-- column -->
+    {% endfor %}
+    </div> <!-- row -->  
+  </div> <!-- container -->
+</div> <!-- column -->
+</div> <!-- row -->
+</div> <!-- container -->
+</body>
+</html>

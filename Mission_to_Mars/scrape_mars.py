@@ -63,7 +63,7 @@ def scrape():
     # Use Pandas to collect the table and store it in a DataFrame.
     facts_df = pd.read_html("https://space-facts.com/mars/")[0]
     # Convert the DataFrame back to html for subsequent display.
-    facts_html = facts_df.to_html()
+    facts_html = facts_df.to_html(header=None, index = False)
 
     # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"facts_table_html": facts_html})
