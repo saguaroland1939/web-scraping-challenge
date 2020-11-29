@@ -36,7 +36,9 @@ def scrape():
     mars_collection.delete_many({})
     # Post new document to Mongo collection.
     mars_collection.insert_one(post)
-    return ""
+    
+    return index()
+
 
 # Set up Flask app to run from command line.
 if __name__ == "__main__":
