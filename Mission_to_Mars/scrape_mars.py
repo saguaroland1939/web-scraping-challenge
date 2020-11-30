@@ -1,11 +1,12 @@
 # This Python script scrapes Mars-related news from four different websites and delivers the content to a Flask app for presentation.
+# Splinter is used to scrape html loaded dynamically and automate button clicks. ChromeDriverManager is required to run Splinter.
+# Beautiful Soup is used to parse content from html. Pandas is used to scrape the table.
 
 # Import dependencies
 from splinter import Browser # For scraping JavaScript-rendered pages and clicking buttons.
 from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager # Required by Splinter.
 import pandas as pd
-import pymongo
 
 # This function scrapes the latest Mars news and images from four different websites, stores the scraped content in a Mongo database, 
 # and returns a Python dictionary.
@@ -101,8 +102,5 @@ def scrape():
     # Insert scraped contents into dictionary. If key already exists, this will overwrite with new value.
     dictionary.update({"hemisphere_image_list": hemisphere_images})
 
+    # Returns a single dictionary with all scraped content store as dictionary or list to app.py.
     return dictionary
-
-# Test print
-#dictionary = scrape()
-#print(dictionary)

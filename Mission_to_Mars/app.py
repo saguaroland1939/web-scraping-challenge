@@ -1,6 +1,8 @@
-# This Flask app contains two routes that can be used independently to display scraped data from a database and to scrape new data as needed.
-# The root route displays the current contents of a Mongo database while the scrape route activates a script that scrapes the latest Mars mission
-# images and facts from various websites and updates the Mongo database. 
+# This Flask app contains two routes that can be used independently to 1) Display The current contents of a Mongo database and 2) To scrape new data as needed.
+# The scraping functionality can take several minutes to complete and is therefore separated from the root route to ensure that at least an initial home page loads quickly.
+# The root route displays the current contents of a Mongo database using a Flask template (index.html) for styling. The scrape route activates a script 
+# (scrape_mars.py) that scrapes the latest Mars mission images and facts from various websites and updates the Mongo database.
+# Pymongo is needed to connect to the Mongo database.
 
 # Import dependencies.
 from flask import Flask, render_template
@@ -36,7 +38,7 @@ def scrape():
     mars_collection.delete_many({})
     # Post new document to Mongo collection.
     mars_collection.insert_one(post)
-    
+    # Call index() to present new content.
     return index()
 
 
